@@ -69,3 +69,20 @@ Evidencias realizadas:
 - Endpoint `POST /api/productos` creando productos
 - Arquitectura por capas: Controller, Service, Repository, Model
 - Compilación exitosa con Maven
+
+## Inventory Service
+
+El microservicio `inventory-service` implementa la gestión de inventario y stock de productos.
+
+| Microservicio | Puerto | Estado | Descripción |
+|---|---:|---|---|
+| inventory-service | 8084 | Funcional | Gestión de stock, reservas y reposición |
+
+Evidencias realizadas:
+
+- Servicio levantado en `http://localhost:8084`
+- Endpoint `GET /api/inventario` funcionando
+- Endpoint `POST /api/inventario` creando inventario
+- Cálculo de `stockLibre`
+- Arquitectura por capas: Controller, Service, Repository, Model
+- Compilación exitosa con Maven
