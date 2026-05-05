@@ -86,3 +86,20 @@ Evidencias realizadas:
 - Cálculo de `stockLibre`
 - Arquitectura por capas: Controller, Service, Repository, Model
 - Compilación exitosa con Maven
+
+## Cart Service
+
+El microservicio `cart-service` implementa la gestión del carrito de compras.
+
+| Microservicio | Puerto | Estado | Descripción |
+|---|---:|---|---|
+| cart-service | 8085 | Funcional | Gestión de carrito de compras |
+
+Evidencias realizadas:
+
+- Servicio levantado en `http://localhost:8085`
+- Endpoint `GET /api/carrito` funcionando
+- Endpoint `POST /api/carrito` agregando productos
+- Endpoint `GET /api/carrito/usuario/1/total` calculando total
+- Arquitectura por capas: Controller, Service, Repository, Model
+- Compilación exitosa con Maven
