@@ -121,3 +121,21 @@ Evidencias realizadas:
 - Endpoint GET /api/pedidos/usuario/1 listando pedidos por usuario
 - Arquitectura por capas: Controller, Service, Repository, Model
 - Compilación exitosa con Maven
+
+## Order Service
+
+El microservicio order-service implementa la gestión de pedidos del sistema e-commerce.
+
+| Microservicio | Puerto | Estado | Descripción |
+|---|---:|---|---|
+| order-service | 8081 | Funcional | Gestión de pedidos y estados |
+
+Evidencias realizadas:
+
+- Servicio levantado en http://localhost:8081
+- Endpoint GET /api/pedidos funcionando
+- Endpoint POST /api/pedidos creando pedidos
+- Endpoint PATCH /api/pedidos/1/estado cambiando estado a PAGADO
+- Endpoint GET /api/pedidos/usuario/1 listando pedidos por usuario
+- Arquitectura por capas: Controller, Service, Repository, Model
+- Compilación exitosa con Maven
