@@ -50,3 +50,22 @@ Solución backend para un sistema de E-commerce basada en arquitectura de micros
 ## Autor
 
 Martin Vasquez - DSY1103 - 2026
+
+## Estado de Microservicios
+
+| Microservicio | Puerto | Estado | Descripción |
+|---|---:|---|---|
+| eureka-server | 8761 | En desarrollo | Service Discovery |
+| catalog-service | 8083 | Funcional | CRUD de productos del catálogo |
+
+## Catalog Service
+
+El microservicio `catalog-service` implementa la gestión de productos del sistema e-commerce.
+
+Evidencias realizadas:
+
+- Servicio levantado en `http://localhost:8083`
+- Endpoint `GET /api/productos` funcionando
+- Endpoint `POST /api/productos` creando productos
+- Arquitectura por capas: Controller, Service, Repository, Model
+- Compilación exitosa con Maven
