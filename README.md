@@ -139,3 +139,22 @@ Evidencias realizadas:
 - Endpoint GET /api/pedidos/usuario/1 listando pedidos por usuario
 - Arquitectura por capas: Controller, Service, Repository, Model
 - Compilación exitosa con Maven
+
+## Payment Service
+
+El microservicio payment-service implementa la gestión de pagos del sistema e-commerce.
+
+| Microservicio | Puerto | Estado | Descripción |
+|---|---:|---|---|
+| payment-service | 8082 | Funcional | Gestión de pagos y estados |
+
+Evidencias realizadas:
+
+- Servicio levantado en http://localhost:8082
+- Endpoint GET /api/pagos funcionando
+- Endpoint POST /api/pagos creando pagos
+- Endpoint PATCH /api/pagos/1/aprobar cambiando estado a APROBADO
+- Endpoint GET /api/pagos/pedido/1 buscando pago por pedido
+- Endpoint GET /api/pagos/usuario/1 listando pagos por usuario
+- Arquitectura por capas: Controller, Service, Repository, Model
+- Compilación exitosa con Maven
