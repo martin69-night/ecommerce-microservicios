@@ -1,0 +1,30 @@
+# ========== Maven ==========
+target/
+**/target/
+*.jar
+*.war
+*.original
+
+# ========== IDE ==========
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+.classpath
+.project
+.settings/
+
+# ========== OS ==========
+.DS_Store
+Thumbs.db
+
+# ========== Logs ==========
+*.log
+logs/
+
+# ========== Maven Wrapper ==========
+.mvn/wrapper/maven-wrapper.jar
+
+# ========== Docker ==========
+data/
