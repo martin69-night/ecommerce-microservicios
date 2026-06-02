@@ -1,0 +1,199 @@
+{
+  "info": {
+    "name": "DSY1103 - E-commerce Microservicios",
+    "description": "Coleccion Postman para probar los microservicios principales del proyecto: catalog, inventory, cart, order y payment.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "01 Crear producto - catalog-service",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8083/api/productos",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8083",
+          "path": ["api", "productos"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"sku\": \"SKU-FEIGN-001\",\n  \"nombre\": \"Notebook Lenovo\",\n  \"descripcion\": \"Notebook para estudiantes\",\n  \"precio\": 599990,\n  \"categoria\": \"Computacion\",\n  \"activo\": true\n}"
+        }
+      }
+    },
+    {
+      "name": "02 Agregar producto al carrito - cart-service con Feign a catalog-service",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8085/api/carrito",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8085",
+          "path": ["api", "carrito"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"usuarioId\": 1,\n  \"sku\": \"SKU-FEIGN-001\",\n  \"cantidad\": 2\n}"
+        }
+      }
+    },
+    {
+      "name": "03 Crear inventario - inventory-service",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8084/api/inventario",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8084",
+          "path": ["api", "inventario"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"productoId\": 1,\n  \"sku\": \"SKU-ORDER-001\",\n  \"cantidadDisponible\": 10,\n  \"cantidadReservada\": 0,\n  \"ubicacion\": \"Bodega Central\",\n  \"activo\": true\n}"
+        }
+      }
+    },
+    {
+      "name": "04 Crear pedido - order-service con Feign a inventory-service",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8081/api/pedidos",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8081",
+          "path": ["api", "pedidos"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"usuarioId\": 1,\n  \"productoId\": 1,\n  \"sku\": \"SKU-ORDER-001\",\n  \"nombreProducto\": \"Notebook Lenovo\",\n  \"precioUnitario\": 599990,\n  \"cantidad\": 2\n}"
+        }
+      }
+    },
+    {
+      "name": "05 Confirmar stock reservado - inventory-service",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:8084/api/inventario/sku/SKU-ORDER-001",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8084",
+          "path": ["api", "inventario", "sku", "SKU-ORDER-001"]
+        }
+      }
+    },
+    {
+      "name": "06 Crear pago - payment-service",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8082/api/pagos",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8082",
+          "path": ["api", "pagos"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"pedidoId\": 1,\n  \"usuarioId\": 1,\n  \"monto\": 1199980,\n  \"metodoPago\": \"TARJETA\"\n}"
+        }
+      }
+    },
+    {
+      "name": "07 Aprobar pago - payment-service",
+      "request": {
+        "method": "PATCH",
+        "url": {
+          "raw": "http://localhost:8082/api/pagos/2/aprobar",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8082",
+          "path": ["api", "pagos", "2", "aprobar"]
+        }
+      }
+    },
+    {
+      "name": "08 Error 404 controlado - producto inexistente",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:8083/api/productos/99999",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8083",
+          "path": ["api", "productos", "99999"]
+        }
+      }
+    },
+    {
+      "name": "09 Error 400 controlado - cantidad invalida en carrito",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8085/api/carrito",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8085",
+          "path": ["api", "carrito"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"usuarioId\": 1,\n  \"sku\": \"SKU-FEIGN-001\",\n  \"cantidad\": 0\n}"
+        }
+      }
+    },
+    {
+      "name": "10 DELETE inventario - 204 No Content",
+      "request": {
+        "method": "DELETE",
+        "url": {
+          "raw": "http://localhost:8084/api/inventario/2",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8084",
+          "path": ["api", "inventario", "2"]
+        }
+      }
+    }
+  ]
+}
