@@ -40,7 +40,7 @@ Cada microservicio usa su propia base de datos:
 - order-service usa order_db
 - payment-service usa payment_db
 
-Todas las bases se ejecutan en el mismo contenedor MySQL por simplicidad de despliegue, pero cada microservicio tiene su propia base logica y sus propias tablas.
+En el despliegue final con Docker Compose, cada microservicio tiene su propio contenedor MySQL y su propia base de datos independiente.
 
 Los microservicios no consultan directamente la base de datos de otro microservicio. Cuando necesitan informacion externa, se comunican por API REST usando Feign Client.
 
@@ -359,3 +359,22 @@ https://github.com/martin69-night/ecommerce-microservicios
 - No se usa Spring Security.
 - No se usa Swagger.
 - Eureka esta incluido, pero no se usa en el flujo principal de esta entrega.
+
+## Despliegue final con Docker Compose
+
+El despliegue final se ejecuta con 10 contenedores:
+
+- api_catalogo usa mysql_catalogo y la base catalog_db.
+- api_inventario usa mysql_inventario y la base inventory_db.
+- api_carrito usa mysql_carrito y la base cart_db.
+- api_ordenes usa mysql_ordenes y la base order_db.
+- api_pagos usa mysql_pagos y la base payment_db.
+
+Los contenedores con imagen Maven/Java corresponden a los microservicios Spring Boot.
+Los contenedores con imagen MySQL corresponden a las bases de datos independientes.
+
+Las comunicaciones entre microservicios implementadas con Feign Client son:
+
+- api_carrito se comunica con api_catalogo.
+- api_ordenes se comunica con api_inventario.
+
