@@ -378,3 +378,17 @@ Las comunicaciones entre microservicios implementadas con Feign Client son:
 - api_carrito se comunica con api_catalogo.
 - api_ordenes se comunica con api_inventario.
 
+
+## Nota sobre URLs
+
+Los ejemplos del README usan `localhost` para facilitar las pruebas locales o mediante puertos reenviados desde VS Code.
+
+En el despliegue sobre EC2 también se pueden consumir los servicios usando la IP pública de la instancia:
+
+- http://100.30.103.13:8083/api/productos
+- http://100.30.103.13:8084/api/inventario
+- http://100.30.103.13:8085/api/carrito
+- http://100.30.103.13:8081/api/pedidos
+- http://100.30.103.13:8082/api/pagos
+
+En la demostración se pueden usar tanto `localhost` como la IP pública, dependiendo de si se prueba desde la misma máquina, desde VS Code con puertos reenviados o directamente contra la EC2.
