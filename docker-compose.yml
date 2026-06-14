@@ -2,6 +2,8 @@ services:
   mysql_catalogo:
     image: mysql:8.0
     container_name: mysql_catalogo
+    ports:
+      - "3306:3306"
     environment:
       MYSQL_DATABASE: catalog_db
       MYSQL_USER: desarrollador
@@ -18,6 +20,8 @@ services:
   mysql_inventario:
     image: mysql:8.0
     container_name: mysql_inventario
+    ports:
+      - "3307:3306"
     environment:
       MYSQL_DATABASE: inventory_db
       MYSQL_USER: desarrollador
@@ -34,6 +38,8 @@ services:
   mysql_carrito:
     image: mysql:8.0
     container_name: mysql_carrito
+    ports:
+      - "3308:3306"
     environment:
       MYSQL_DATABASE: cart_db
       MYSQL_USER: desarrollador
@@ -50,6 +56,8 @@ services:
   mysql_ordenes:
     image: mysql:8.0
     container_name: mysql_ordenes
+    ports:
+      - "3309:3306"
     environment:
       MYSQL_DATABASE: order_db
       MYSQL_USER: desarrollador
@@ -66,6 +74,8 @@ services:
   mysql_pagos:
     image: mysql:8.0
     container_name: mysql_pagos
+    ports:
+      - "3310:3306"
     environment:
       MYSQL_DATABASE: payment_db
       MYSQL_USER: desarrollador
