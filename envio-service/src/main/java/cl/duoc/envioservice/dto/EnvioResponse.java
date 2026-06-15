@@ -1,20 +1,29 @@
 package cl.duoc.envioservice.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import java.time.LocalDateTime;
 import java.math.BigDecimal;
 
+@Schema(description = "Modelo de datos usado por la API")
 public class EnvioResponse {
 
+    @Schema(description = "Campo id", example = "valor")
     private Long id;
 
+    @Schema(description = "Campo pedidoId", example = "valor")
     private Long pedidoId;
 
+    @Schema(description = "Campo direccion", example = "valor")
     private String direccion;
 
+    @Schema(description = "Campo ciudad", example = "valor")
     private String ciudad;
 
+    @Schema(description = "Campo estado", example = "valor")
     private String estado;
 
+    @Schema(description = "Campo fechaCreacion", example = "valor")
     private LocalDateTime fechaCreacion;
 
 

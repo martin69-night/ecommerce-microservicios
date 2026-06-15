@@ -1,18 +1,26 @@
 package cl.duoc.favoritoservice.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import java.time.LocalDateTime;
 import java.math.BigDecimal;
 
+@Schema(description = "Modelo de datos usado por la API")
 public class FavoritoResponse {
 
+    @Schema(description = "Campo id", example = "valor")
     private Long id;
 
+    @Schema(description = "Campo usuarioId", example = "valor")
     private Long usuarioId;
 
+    @Schema(description = "Campo productoId", example = "valor")
     private Long productoId;
 
+    @Schema(description = "Campo sku", example = "valor")
     private String sku;
 
+    @Schema(description = "Campo fechaCreacion", example = "valor")
     private LocalDateTime fechaCreacion;
 
 

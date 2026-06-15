@@ -1,18 +1,26 @@
 package cl.duoc.descuentoservice.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import java.time.LocalDateTime;
 import java.math.BigDecimal;
 
+@Schema(description = "Modelo de datos usado por la API")
 public class DescuentoResponse {
 
+    @Schema(description = "Campo id", example = "valor")
     private Long id;
 
+    @Schema(description = "Campo codigo", example = "valor")
     private String codigo;
 
+    @Schema(description = "Campo porcentaje", example = "valor")
     private BigDecimal porcentaje;
 
+    @Schema(description = "Campo activo", example = "valor")
     private Boolean activo;
 
+    @Schema(description = "Campo fechaCreacion", example = "valor")
     private LocalDateTime fechaCreacion;
 
 

@@ -1,20 +1,29 @@
 package cl.duoc.notificacionservice.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import java.time.LocalDateTime;
 import java.math.BigDecimal;
 
+@Schema(description = "Modelo de datos usado por la API")
 public class NotificacionResponse {
 
+    @Schema(description = "Campo id", example = "valor")
     private Long id;
 
+    @Schema(description = "Campo usuarioId", example = "valor")
     private Long usuarioId;
 
+    @Schema(description = "Campo canal", example = "valor")
     private String canal;
 
+    @Schema(description = "Campo mensaje", example = "valor")
     private String mensaje;
 
+    @Schema(description = "Campo estado", example = "valor")
     private String estado;
 
+    @Schema(description = "Campo fechaCreacion", example = "valor")
     private LocalDateTime fechaCreacion;
 
 

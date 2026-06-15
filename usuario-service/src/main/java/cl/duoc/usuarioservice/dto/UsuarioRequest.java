@@ -1,22 +1,29 @@
 package cl.duoc.usuarioservice.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import jakarta.validation.constraints.*;
 import java.math.BigDecimal;
 
+@Schema(description = "Modelo de datos usado por la API")
 public class UsuarioRequest {
 
     @NotBlank(message = "El nombre es obligatorio")
     @Size(min = 2, max = 100, message = "El nombre debe tener entre 2 y 100 caracteres")
+    @Schema(description = "Campo nombre", example = "valor")
     private String nombre;
 
     @NotBlank(message = "El email es obligatorio")
     @Email(message = "El email no tiene un formato valido")
+    @Schema(description = "Campo email", example = "valor")
     private String email;
 
     @NotBlank(message = "El rol es obligatorio")
+    @Schema(description = "Campo rol", example = "valor")
     private String rol;
 
     @NotNull(message = "El estado activo es obligatorio")
+    @Schema(description = "Campo activo", example = "valor")
     private Boolean activo;
 
 
