@@ -392,3 +392,31 @@ En el despliegue sobre EC2 también se pueden consumir los servicios usando la I
 - http://100.30.103.13:8082/api/pagos
 
 En la demostración se pueden usar tanto `localhost` como la IP pública, dependiendo de si se prueba desde la misma máquina, desde VS Code con puertos reenviados o directamente contra la EC2.
+
+---
+
+## Actualización final: 10 microservicios independientes
+
+El proyecto fue ampliado a 10 microservicios independientes, cada uno con su propio contenedor API y su propia base de datos MySQL.
+
+| Microservicio | API | Puerto API | Base de datos | MySQL | Puerto MySQL |
+|---|---|---:|---|---|---:|
+| catalog-service | api_catalogo | 8083 | catalog_db | mysql_catalogo | 3306 |
+| inventory-service | api_inventario | 8084 | inventory_db | mysql_inventario | 3307 |
+| cart-service | api_carrito | 8085 | cart_db | mysql_carrito | 3308 |
+| order-service | api_ordenes | 8081 | order_db | mysql_ordenes | 3309 |
+| payment-service | api_pagos | 8082 | payment_db | mysql_pagos | 3310 |
+| usuario-service | api_usuarios | 8086 | usuario_db | mysql_usuarios | 3311 |
+| envio-service | api_envios | 8087 | envio_db | mysql_envios | 3312 |
+| descuento-service | api_descuentos | 8088 | descuento_db | mysql_descuentos | 3313 |
+| favorito-service | api_favoritos | 8089 | favorito_db | mysql_favoritos | 3314 |
+| notificacion-service | api_notificaciones | 8090 | notificacion_db | mysql_notificaciones | 3315 |
+
+Las APIs se exponen desde el puerto 8081 hasta el 8090.  
+Las bases MySQL se exponen desde el puerto 3306 hasta el 3315.
+
+La evidencia técnica se encuentra en:
+
+- `docs/evidencias/docker_ps_10_microservicios.txt`
+- `docs/evidencias/resumen_10_microservicios.md`
+

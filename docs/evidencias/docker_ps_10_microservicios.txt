@@ -1,0 +1,21 @@
+NAMES                  IMAGE                          STATUS                       PORTS
+api_favoritos          maven:3.9-eclipse-temurin-21   Up 7 minutes                 0.0.0.0:8089->8089/tcp, [::]:8089->8089/tcp
+api_envios             maven:3.9-eclipse-temurin-21   Up 7 minutes                 0.0.0.0:8087->8087/tcp, [::]:8087->8087/tcp
+api_descuentos         maven:3.9-eclipse-temurin-21   Up 7 minutes                 0.0.0.0:8088->8088/tcp, [::]:8088->8088/tcp
+api_notificaciones     maven:3.9-eclipse-temurin-21   Up 7 minutes                 0.0.0.0:8090->8090/tcp, [::]:8090->8090/tcp
+mysql_favoritos        mysql:8.0                      Up 7 minutes (healthy)       33060/tcp, 0.0.0.0:3314->3306/tcp, [::]:3314->3306/tcp
+mysql_envios           mysql:8.0                      Up 7 minutes (healthy)       33060/tcp, 0.0.0.0:3312->3306/tcp, [::]:3312->3306/tcp
+mysql_descuentos       mysql:8.0                      Up 7 minutes (healthy)       33060/tcp, 0.0.0.0:3313->3306/tcp, [::]:3313->3306/tcp
+mysql_notificaciones   mysql:8.0                      Up 7 minutes (healthy)       33060/tcp, 0.0.0.0:3315->3306/tcp, [::]:3315->3306/tcp
+api_ordenes            maven:3.9-eclipse-temurin-21   Exited (143) 7 minutes ago   
+api_carrito            maven:3.9-eclipse-temurin-21   Exited (143) 7 minutes ago   
+api_inventario         maven:3.9-eclipse-temurin-21   Exited (143) 7 minutes ago   
+api_catalogo           maven:3.9-eclipse-temurin-21   Up 7 minutes                 0.0.0.0:8083->8083/tcp, [::]:8083->8083/tcp
+api_pagos              maven:3.9-eclipse-temurin-21   Exited (143) 7 minutes ago   
+mysql_catalogo         mysql:8.0                      Up 7 minutes (healthy)       0.0.0.0:3306->3306/tcp, [::]:3306->3306/tcp, 33060/tcp
+mysql_inventario       mysql:8.0                      Exited (0) 7 minutes ago     
+mysql_pagos            mysql:8.0                      Exited (0) 7 minutes ago     
+mysql_carrito          mysql:8.0                      Exited (0) 7 minutes ago     
+mysql_ordenes          mysql:8.0                      Exited (0) 7 minutes ago     
+api_usuarios           maven:3.9-eclipse-temurin-21   Up 7 minutes                 0.0.0.0:8086->8086/tcp, [::]:8086->8086/tcp
+mysql_usuarios         mysql:8.0                      Up 7 minutes (healthy)       33060/tcp, 0.0.0.0:3311->3306/tcp, [::]:3311->3306/tcp
