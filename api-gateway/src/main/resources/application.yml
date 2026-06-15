@@ -1,0 +1,41 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      server:
+        webflux:
+          routes:
+            - id: order-service
+              uri: http://localhost:8081
+              predicates:
+                - Path=/api/pedidos/**
+
+            - id: payment-service
+              uri: http://localhost:8082
+              predicates:
+                - Path=/api/pagos/**
+
+            - id: catalog-service
+              uri: http://localhost:8083
+              predicates:
+                - Path=/api/productos/**
+
+            - id: inventory-service
+              uri: http://localhost:8084
+              predicates:
+                - Path=/api/inventario/**
+
+            - id: cart-service
+              uri: http://localhost:8085
+              predicates:
+                - Path=/api/carrito/**
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
