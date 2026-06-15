@@ -28,3 +28,11 @@ logs/
 
 # ========== Docker ==========
 data/
+
+# Maven
+target/
+*/target/
+
+# Backups temporales
+*.bak
+*.bak.*
