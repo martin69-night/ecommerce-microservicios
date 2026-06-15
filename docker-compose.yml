@@ -201,6 +201,215 @@ services:
     networks:
       - ecommerce-net
 
+
+  mysql_usuarios:
+    image: mysql:8.0
+    container_name: mysql_usuarios
+    ports:
+      - "3311:3306"
+    environment:
+      MYSQL_DATABASE: usuario_db
+      MYSQL_USER: desarrollador
+      MYSQL_PASSWORD: password_seguro_123
+      MYSQL_ROOT_PASSWORD: root_seguro_123
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - ecommerce-net
+
+  api_usuarios:
+    image: maven:3.9-eclipse-temurin-21
+    container_name: api_usuarios
+    working_dir: /app
+    volumes:
+      - ./usuario-service:/app
+      - maven_repo:/root/.m2
+    command: mvn spring-boot:run
+    ports:
+      - "8086:8086"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql_usuarios:3306/usuario_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: desarrollador
+      SPRING_DATASOURCE_PASSWORD: password_seguro_123
+      EUREKA_CLIENT_ENABLED: "false"
+    depends_on:
+      mysql_usuarios:
+        condition: service_healthy
+    networks:
+      - ecommerce-net
+
+
+  mysql_envios:
+    image: mysql:8.0
+    container_name: mysql_envios
+    ports:
+      - "3312:3306"
+    environment:
+      MYSQL_DATABASE: envio_db
+      MYSQL_USER: desarrollador
+      MYSQL_PASSWORD: password_seguro_123
+      MYSQL_ROOT_PASSWORD: root_seguro_123
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - ecommerce-net
+
+  api_envios:
+    image: maven:3.9-eclipse-temurin-21
+    container_name: api_envios
+    working_dir: /app
+    volumes:
+      - ./envio-service:/app
+      - maven_repo:/root/.m2
+    command: mvn spring-boot:run
+    ports:
+      - "8087:8087"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql_envios:3306/envio_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: desarrollador
+      SPRING_DATASOURCE_PASSWORD: password_seguro_123
+      EUREKA_CLIENT_ENABLED: "false"
+    depends_on:
+      mysql_envios:
+        condition: service_healthy
+    networks:
+      - ecommerce-net
+
+
+  mysql_descuentos:
+    image: mysql:8.0
+    container_name: mysql_descuentos
+    ports:
+      - "3313:3306"
+    environment:
+      MYSQL_DATABASE: descuento_db
+      MYSQL_USER: desarrollador
+      MYSQL_PASSWORD: password_seguro_123
+      MYSQL_ROOT_PASSWORD: root_seguro_123
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - ecommerce-net
+
+  api_descuentos:
+    image: maven:3.9-eclipse-temurin-21
+    container_name: api_descuentos
+    working_dir: /app
+    volumes:
+      - ./descuento-service:/app
+      - maven_repo:/root/.m2
+    command: mvn spring-boot:run
+    ports:
+      - "8088:8088"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql_descuentos:3306/descuento_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: desarrollador
+      SPRING_DATASOURCE_PASSWORD: password_seguro_123
+      EUREKA_CLIENT_ENABLED: "false"
+    depends_on:
+      mysql_descuentos:
+        condition: service_healthy
+    networks:
+      - ecommerce-net
+
+
+  mysql_favoritos:
+    image: mysql:8.0
+    container_name: mysql_favoritos
+    ports:
+      - "3314:3306"
+    environment:
+      MYSQL_DATABASE: favorito_db
+      MYSQL_USER: desarrollador
+      MYSQL_PASSWORD: password_seguro_123
+      MYSQL_ROOT_PASSWORD: root_seguro_123
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - ecommerce-net
+
+  api_favoritos:
+    image: maven:3.9-eclipse-temurin-21
+    container_name: api_favoritos
+    working_dir: /app
+    volumes:
+      - ./favorito-service:/app
+      - maven_repo:/root/.m2
+    command: mvn spring-boot:run
+    ports:
+      - "8089:8089"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql_favoritos:3306/favorito_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: desarrollador
+      SPRING_DATASOURCE_PASSWORD: password_seguro_123
+      EUREKA_CLIENT_ENABLED: "false"
+      USUARIO_SERVICE_URL: http://api_usuarios:8086
+      CATALOG_SERVICE_URL: http://api_catalogo:8083
+    depends_on:
+      mysql_favoritos:
+        condition: service_healthy
+      api_usuarios:
+        condition: service_started
+      api_catalogo:
+        condition: service_started
+    networks:
+      - ecommerce-net
+
+
+  mysql_notificaciones:
+    image: mysql:8.0
+    container_name: mysql_notificaciones
+    ports:
+      - "3315:3306"
+    environment:
+      MYSQL_DATABASE: notificacion_db
+      MYSQL_USER: desarrollador
+      MYSQL_PASSWORD: password_seguro_123
+      MYSQL_ROOT_PASSWORD: root_seguro_123
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - ecommerce-net
+
+  api_notificaciones:
+    image: maven:3.9-eclipse-temurin-21
+    container_name: api_notificaciones
+    working_dir: /app
+    volumes:
+      - ./notificacion-service:/app
+      - maven_repo:/root/.m2
+    command: mvn spring-boot:run
+    ports:
+      - "8090:8090"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql_notificaciones:3306/notificacion_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: desarrollador
+      SPRING_DATASOURCE_PASSWORD: password_seguro_123
+      EUREKA_CLIENT_ENABLED: "false"
+      USUARIO_SERVICE_URL: http://api_usuarios:8086
+    depends_on:
+      mysql_notificaciones:
+        condition: service_healthy
+      api_usuarios:
+        condition: service_started
+    networks:
+      - ecommerce-net
+
 networks:
   ecommerce-net:
 
