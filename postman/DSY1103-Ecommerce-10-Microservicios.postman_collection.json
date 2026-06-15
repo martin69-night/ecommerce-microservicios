@@ -1,0 +1,85 @@
+{
+  "info": {
+    "name": "DSY1103 Ecommerce 10 Microservicios",
+    "description": "Coleccion Postman para probar los 10 microservicios independientes del proyecto ecommerce.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://18.206.169.13"
+    }
+  ],
+  "item": [
+    {
+      "name": "01 GET catalog-service productos",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}:8083/api/productos"
+      }
+    },
+    {
+      "name": "02 GET inventory-service inventario",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}:8084/api/inventario"
+      }
+    },
+    {
+      "name": "03 GET cart-service carrito",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}:8085/api/carrito"
+      }
+    },
+    {
+      "name": "04 GET order-service pedidos",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}:8081/api/pedidos"
+      }
+    },
+    {
+      "name": "05 GET payment-service pagos",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}:8082/api/pagos"
+      }
+    },
+    {
+      "name": "06 GET usuario-service usuarios",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}:8086/api/usuarios"
+      }
+    },
+    {
+      "name": "07 GET envio-service envios",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}:8087/api/envios"
+      }
+    },
+    {
+      "name": "08 GET descuento-service descuentos",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}:8088/api/descuentos"
+      }
+    },
+    {
+      "name": "09 GET favorito-service favoritos",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}:8089/api/favoritos"
+      }
+    },
+    {
+      "name": "10 GET notificacion-service notificaciones",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}:8090/api/notificaciones"
+      }
+    }
+  ]
+}

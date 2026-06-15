@@ -420,3 +420,12 @@ La evidencia técnica se encuentra en:
 - `docs/evidencias/docker_ps_10_microservicios.txt`
 - `docs/evidencias/resumen_10_microservicios.md`
 
+
+## Colección Postman final
+
+Se agregó una colección Postman para validar los 10 microservicios del proyecto:
+
+- `postman/DSY1103-Ecommerce-10-Microservicios.postman_collection.json`
+
+La colección utiliza la variable `base_url` con la IP pública de la instancia EC2.
+
