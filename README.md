@@ -93,3 +93,4 @@ Ver detalle en [TESTING_PLAN.md](./TESTING_PLAN.md)
 - JUnit 5 + Mockito
 - Springdoc OpenAPI 3.0.3 (Swagger UI)
 - Docker + Docker Compose
+
