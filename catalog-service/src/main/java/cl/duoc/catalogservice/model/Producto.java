@@ -4,6 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Column;
 import jakarta.persistence.Table;
 
 import java.math.BigDecimal;
@@ -16,9 +17,12 @@ public class Producto {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, unique = true, length = 50)
     private String sku;
+    @Column(nullable = false, length = 120)
     private String nombre;
     private String descripcion;
+    @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal precio;
     private String categoria;
     private Boolean activo = true;
