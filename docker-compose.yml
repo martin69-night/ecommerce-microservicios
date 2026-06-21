@@ -410,6 +410,27 @@ services:
     networks:
       - ecommerce-net
 
+
+  api_gateway:
+    image: maven:3.9-eclipse-temurin-21
+    container_name: api_gateway
+    working_dir: /app
+    volumes:
+      - ./api-gateway:/app
+      - maven_repo:/root/.m2
+    command: mvn spring-boot:run
+    ports:
+      - "8080:8080"
+    depends_on:
+      api_catalogo:
+        condition: service_started
+      api_inventario:
+        condition: service_started
+      api_usuarios:
+        condition: service_started
+    networks:
+      - ecommerce-net
+
 networks:
   ecommerce-net:
 
