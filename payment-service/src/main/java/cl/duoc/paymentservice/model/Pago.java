@@ -12,7 +12,9 @@ public class Pago {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
 
+    @Column(nullable = false)
     public Long pedidoId;
+    @Column(nullable = false)
     public Long usuarioId;
 
     @Column(nullable = false, precision = 10, scale = 2)

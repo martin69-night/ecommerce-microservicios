@@ -15,8 +15,10 @@ public class Inventario {
     @Column(nullable = false, unique = true, length = 50)
     private String sku;
 
+    @Column(nullable = false)
     private Integer cantidadDisponible;
 
+    @Column(nullable = false)
     private Integer cantidadReservada;
 
     private String ubicacion;
