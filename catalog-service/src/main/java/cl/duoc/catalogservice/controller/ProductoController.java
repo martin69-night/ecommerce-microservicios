@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 
 import cl.duoc.catalogservice.model.Producto;
+import jakarta.validation.Valid;
 import cl.duoc.catalogservice.service.ProductoService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -155,7 +156,7 @@ public class ProductoController {
     })
 
     @PostMapping
-    public ResponseEntity<Producto> crear(@RequestBody Producto producto) {
+    public ResponseEntity<Producto> crear(@Valid @RequestBody Producto producto) {
         Producto creado = productoService.crear(producto);
         return ResponseEntity.status(HttpStatus.CREATED).body(creado);
     }
@@ -175,7 +176,7 @@ public class ProductoController {
     })
 
     @PutMapping("/{id}")
-    public ResponseEntity<Producto> actualizar(@Parameter(description = "ID del recurso", required = true) @PathVariable Long id, @RequestBody Producto producto) {
+    public ResponseEntity<Producto> actualizar(@Parameter(description = "ID del recurso", required = true) @PathVariable Long id, @Valid @RequestBody Producto producto) {
         return ResponseEntity.ok(productoService.actualizar(id, producto));
     }
 

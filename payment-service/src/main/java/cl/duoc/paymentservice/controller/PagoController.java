@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 
 import cl.duoc.paymentservice.model.Pago;
+import jakarta.validation.Valid;
 import cl.duoc.paymentservice.service.PagoService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -136,7 +137,7 @@ public class PagoController {
     })
 
     @PostMapping
-    public ResponseEntity<Pago> crear(@RequestBody Pago pago) {
+    public ResponseEntity<Pago> crear(@Valid @RequestBody Pago pago) {
         return ResponseEntity.status(HttpStatus.CREATED).body(pagoService.crear(pago));
     }
 

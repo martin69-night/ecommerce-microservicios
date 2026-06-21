@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 
 import cl.duoc.orderservice.model.Pedido;
+import jakarta.validation.Valid;
 import cl.duoc.orderservice.service.PedidoService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -117,7 +118,7 @@ public class PedidoController {
     })
 
     @PostMapping
-    public ResponseEntity<Pedido> crear(@RequestBody Pedido pedido) {
+    public ResponseEntity<Pedido> crear(@Valid @RequestBody Pedido pedido) {
         return ResponseEntity.status(HttpStatus.CREATED).body(pedidoService.crear(pedido));
     }
 

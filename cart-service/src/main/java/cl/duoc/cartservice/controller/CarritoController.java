@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 
 import cl.duoc.cartservice.model.CarritoItem;
+import jakarta.validation.Valid;
 import cl.duoc.cartservice.service.CarritoService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -100,7 +101,7 @@ public class CarritoController {
     })
 
     @PostMapping
-    public ResponseEntity<CarritoItem> agregarItem(@RequestBody CarritoItem item) {
+    public ResponseEntity<CarritoItem> agregarItem(@Valid @RequestBody CarritoItem item) {
         return ResponseEntity.status(HttpStatus.CREATED).body(carritoService.agregarItem(item));
     }
 

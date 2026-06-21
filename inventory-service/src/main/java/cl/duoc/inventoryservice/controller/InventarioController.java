@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 
 import cl.duoc.inventoryservice.model.Inventario;
+import jakarta.validation.Valid;
 import cl.duoc.inventoryservice.service.InventarioService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -136,7 +137,7 @@ public class InventarioController {
     })
 
     @PostMapping
-    public ResponseEntity<Inventario> crear(@RequestBody Inventario inventario) {
+    public ResponseEntity<Inventario> crear(@Valid @RequestBody Inventario inventario) {
         return ResponseEntity.status(HttpStatus.CREATED).body(inventarioService.crear(inventario));
     }
 
@@ -155,7 +156,7 @@ public class InventarioController {
     })
 
     @PutMapping("/{id}")
-    public ResponseEntity<Inventario> actualizar(@Parameter(description = "ID del recurso", required = true) @PathVariable Long id, @RequestBody Inventario inventario) {
+    public ResponseEntity<Inventario> actualizar(@Parameter(description = "ID del recurso", required = true) @PathVariable Long id, @Valid @RequestBody Inventario inventario) {
         return ResponseEntity.ok(inventarioService.actualizar(id, inventario));
     }
 
