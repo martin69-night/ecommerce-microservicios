@@ -37,3 +37,4 @@ target/
 *.bak
 *.bak.*
 bin/
+docker-compose.yml.respaldo
