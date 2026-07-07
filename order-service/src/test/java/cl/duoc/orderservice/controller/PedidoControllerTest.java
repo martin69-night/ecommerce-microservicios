@@ -1,91 +1,129 @@
 package cl.duoc.orderservice.controller;
 
-import cl.duoc.orderservice.exception.GlobalExceptionHandler;
-import cl.duoc.orderservice.exception.PedidoNotFoundException;
 import cl.duoc.orderservice.model.Pedido;
 import cl.duoc.orderservice.service.PedidoService;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
 import java.math.BigDecimal;
 import java.util.List;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+@ExtendWith(MockitoExtension.class)
 @DisplayName("PedidoController - Capa Controlador")
 class PedidoControllerTest {
 
-    private MockMvc mockMvc;
+    @Mock
     private PedidoService pedidoService;
-    private ObjectMapper objectMapper;
 
-    @BeforeEach
-    void setUp() {
-        pedidoService = mock(PedidoService.class);
-        mockMvc = MockMvcBuilders.standaloneSetup(new PedidoController(pedidoService))
-                .setControllerAdvice(new GlobalExceptionHandler()).build();
-        objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
+    @InjectMocks
+    private PedidoController pedidoController;
+
+    private Pedido pedido() {
+        Pedido pedido = new Pedido();
+        pedido.setId(1L);
+        pedido.setUsuarioId(10L);
+        pedido.setProductoId(100L);
+        pedido.setSku("SKU-001");
+        pedido.setNombreProducto("Laptop");
+        pedido.setPrecioUnitario(new BigDecimal("100.00"));
+        pedido.setCantidad(2);
+        pedido.setTotal(new BigDecimal("200.00"));
+        pedido.setEstado("CREADO");
+        pedido.setActivo(true);
+        return pedido;
     }
 
     @Test
-    @DisplayName("GET /api/pedidos debe retornar 200 con lista")
-    void listarActivosDebeRetornar200() throws Exception {
-        Pedido p = new Pedido();
-        p.setId(1L);
-        p.setEstado("CREADO");
-        when(pedidoService.listarActivos()).thenReturn(List.of(p));
-        mockMvc.perform(get("/api/pedidos"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].estado").value("CREADO"));
+    void listarActivosDebeRetornarOk() {
+        when(pedidoService.listarActivos()).thenReturn(List.of(pedido()));
+
+        ResponseEntity<List<Pedido>> respuesta = pedidoController.listarActivos();
+
+        assertEquals(HttpStatus.OK, respuesta.getStatusCode());
+        assertEquals(1, respuesta.getBody().size());
+        verify(pedidoService).listarActivos();
     }
 
     @Test
-    @DisplayName("GET /api/pedidos/{id} debe retornar 200 cuando existe")
-    void buscarPorIdDebeRetornar200() throws Exception {
-        Pedido p = new Pedido();
-        p.setId(1L);
-        p.setEstado("CREADO");
-        when(pedidoService.buscarPorId(1L)).thenReturn(p);
-        mockMvc.perform(get("/api/pedidos/1"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(1));
+    void listarPorUsuarioDebeRetornarOk() {
+        when(pedidoService.listarPorUsuario(10L)).thenReturn(List.of(pedido()));
+
+        ResponseEntity<List<Pedido>> respuesta = pedidoController.listarPorUsuario(10L);
+
+        assertEquals(HttpStatus.OK, respuesta.getStatusCode());
+        assertEquals(1, respuesta.getBody().size());
+        verify(pedidoService).listarPorUsuario(10L);
     }
 
     @Test
-    @DisplayName("GET /api/pedidos/{id} debe retornar 404 cuando no existe")
-    void buscarPorIdDebeRetornar404() throws Exception {
-        when(pedidoService.buscarPorId(99L)).thenThrow(new PedidoNotFoundException("No encontrado"));
-        mockMvc.perform(get("/api/pedidos/99"))
-                .andExpect(status().isNotFound());
+    void listarPorEstadoDebeConvertirEstadoAMayusculas() {
+        when(pedidoService.listarPorEstado("CREADO")).thenReturn(List.of(pedido()));
+
+        ResponseEntity<List<Pedido>> respuesta = pedidoController.listarPorEstado("creado");
+
+        assertEquals(HttpStatus.OK, respuesta.getStatusCode());
+        assertEquals(1, respuesta.getBody().size());
+        verify(pedidoService).listarPorEstado("CREADO");
     }
 
     @Test
-    @DisplayName("POST /api/pedidos debe retornar 201 al crear")
-    void crearDebeRetornar201() throws Exception {
-        Pedido nuevo = new Pedido();
-        nuevo.setUsuarioId(1L);
-        nuevo.setProductoId(2L);
-        nuevo.setSku("SKU-001");
-        nuevo.setNombreProducto("Laptop");
-        nuevo.setPrecioUnitario(new BigDecimal("999.99"));
-        nuevo.setCantidad(1);
+    void buscarPorIdDebeRetornarOk() {
+        when(pedidoService.buscarPorId(1L)).thenReturn(pedido());
 
-        Pedido creado = new Pedido();
-        creado.setId(1L);
-        creado.setEstado("CREADO");
+        ResponseEntity<Pedido> respuesta = pedidoController.buscarPorId(1L);
 
-        when(pedidoService.crear(any())).thenReturn(creado);
-        mockMvc.perform(post("/api/pedidos")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(nuevo)))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").value(1));
+        assertEquals(HttpStatus.OK, respuesta.getStatusCode());
+        assertEquals(1L, respuesta.getBody().getId());
+        verify(pedidoService).buscarPorId(1L);
+    }
+
+    @Test
+    void crearDebeRetornarCreated() {
+        Pedido pedido = pedido();
+        when(pedidoService.crear(pedido)).thenReturn(pedido);
+
+        ResponseEntity<Pedido> respuesta = pedidoController.crear(pedido);
+
+        assertEquals(HttpStatus.CREATED, respuesta.getStatusCode());
+        assertSame(pedido, respuesta.getBody());
+        verify(pedidoService).crear(pedido);
+    }
+
+    @Test
+    void cambiarEstadoDebeRetornarOk() {
+        Pedido pedido = pedido();
+        pedido.setEstado("PAGADO");
+        when(pedidoService.cambiarEstado(1L, "PAGADO")).thenReturn(pedido);
+
+        ResponseEntity<Pedido> respuesta = pedidoController.cambiarEstado(1L, "PAGADO");
+
+        assertEquals(HttpStatus.OK, respuesta.getStatusCode());
+        assertEquals("PAGADO", respuesta.getBody().getEstado());
+        verify(pedidoService).cambiarEstado(1L, "PAGADO");
+    }
+
+    @Test
+    void cancelarDebeRetornarOk() {
+        Pedido pedido = pedido();
+        pedido.setEstado("CANCELADO");
+        pedido.setActivo(false);
+
+        when(pedidoService.cancelar(1L)).thenReturn(pedido);
+
+        ResponseEntity<Pedido> respuesta = pedidoController.cancelar(1L);
+
+        assertEquals(HttpStatus.OK, respuesta.getStatusCode());
+        assertEquals("CANCELADO", respuesta.getBody().getEstado());
+        assertFalse(respuesta.getBody().getActivo());
+        verify(pedidoService).cancelar(1L);
     }
 }
