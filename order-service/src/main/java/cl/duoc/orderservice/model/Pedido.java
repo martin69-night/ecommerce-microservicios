@@ -1,6 +1,11 @@
 package cl.duoc.orderservice.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -13,27 +18,40 @@ public class Pedido {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull(message = "El usuarioId es obligatorio")
+    @Positive(message = "El usuarioId debe ser mayor a cero")
     @Column(nullable = false)
     private Long usuarioId;
 
+    @NotNull(message = "El productoId es obligatorio")
+    @Positive(message = "El productoId debe ser mayor a cero")
     @Column(nullable = false)
     private Long productoId;
 
+    @NotBlank(message = "El SKU es obligatorio")
+    @Size(max = 50, message = "El SKU no puede superar 50 caracteres")
     @Column(nullable = false, length = 50)
     private String sku;
 
+    @NotBlank(message = "El nombre del producto es obligatorio")
+    @Size(max = 120, message = "El nombre del producto no puede superar 120 caracteres")
     @Column(nullable = false, length = 120)
     private String nombreProducto;
 
+    @NotNull(message = "El precio unitario es obligatorio")
+    @DecimalMin(value = "0.01", message = "El precio unitario debe ser mayor a cero")
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal precioUnitario;
 
+    @NotNull(message = "La cantidad es obligatoria")
+    @Positive(message = "La cantidad debe ser mayor a cero")
     @Column(nullable = false)
     private Integer cantidad;
 
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal total;
 
+    @Size(max = 30, message = "El estado no puede superar 30 caracteres")
     @Column(nullable = false, length = 30)
     private String estado;
 
