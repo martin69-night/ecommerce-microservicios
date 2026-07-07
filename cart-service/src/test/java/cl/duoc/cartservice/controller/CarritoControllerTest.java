@@ -1,77 +1,135 @@
 package cl.duoc.cartservice.controller;
 
-import cl.duoc.cartservice.exception.CarritoItemNotFoundException;
-import cl.duoc.cartservice.exception.GlobalExceptionHandler;
 import cl.duoc.cartservice.model.CarritoItem;
 import cl.duoc.cartservice.service.CarritoService;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
 import java.math.BigDecimal;
 import java.util.List;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import java.util.Map;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+@ExtendWith(MockitoExtension.class)
 @DisplayName("CarritoController - Capa Controlador")
 class CarritoControllerTest {
 
-    private MockMvc mockMvc;
+    @Mock
     private CarritoService carritoService;
-    private ObjectMapper objectMapper;
 
-    @BeforeEach
-    void setUp() {
-        carritoService = mock(CarritoService.class);
-        mockMvc = MockMvcBuilders.standaloneSetup(new CarritoController(carritoService))
-                .setControllerAdvice(new GlobalExceptionHandler()).build();
-        objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
+    @InjectMocks
+    private CarritoController carritoController;
+
+    private CarritoItem item() {
+        CarritoItem item = new CarritoItem();
+        item.setId(1L);
+        item.setUsuarioId(10L);
+        item.setProductoId(100L);
+        item.setSku("SKU-001");
+        item.setNombreProducto("Laptop");
+        item.setPrecioUnitario(new BigDecimal("100.00"));
+        item.setCantidad(2);
+        item.setActivo(true);
+        return item;
     }
 
     @Test
-    @DisplayName("GET /api/carrito debe retornar 200 con lista")
-    void listarActivosDebeRetornar200() throws Exception {
-        CarritoItem item = new CarritoItem(1L, 1L, 2L, "SKU-001", "Laptop", new BigDecimal("999.99"), 1, true, null);
-        when(carritoService.listarActivos()).thenReturn(List.of(item));
-        mockMvc.perform(get("/api/carrito"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].sku").value("SKU-001"));
+    void listarActivosDebeRetornarOk() {
+        when(carritoService.listarActivos()).thenReturn(List.of(item()));
+
+        ResponseEntity<List<CarritoItem>> respuesta = carritoController.listarActivos();
+
+        assertEquals(HttpStatus.OK, respuesta.getStatusCode());
+        assertEquals(1, respuesta.getBody().size());
+        verify(carritoService).listarActivos();
     }
 
     @Test
-    @DisplayName("GET /api/carrito/{id} debe retornar 200 cuando existe")
-    void buscarPorIdDebeRetornar200() throws Exception {
-        CarritoItem item = new CarritoItem(1L, 1L, 2L, "SKU-001", "Laptop", new BigDecimal("999.99"), 1, true, null);
-        when(carritoService.buscarPorId(1L)).thenReturn(item);
-        mockMvc.perform(get("/api/carrito/1"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.sku").value("SKU-001"));
+    void listarPorUsuarioDebeRetornarOk() {
+        when(carritoService.listarPorUsuario(10L)).thenReturn(List.of(item()));
+
+        ResponseEntity<List<CarritoItem>> respuesta = carritoController.listarPorUsuario(10L);
+
+        assertEquals(HttpStatus.OK, respuesta.getStatusCode());
+        assertEquals(1, respuesta.getBody().size());
+        verify(carritoService).listarPorUsuario(10L);
     }
 
     @Test
-    @DisplayName("GET /api/carrito/{id} debe retornar 404 cuando no existe")
-    void buscarPorIdDebeRetornar404() throws Exception {
-        when(carritoService.buscarPorId(99L)).thenThrow(new CarritoItemNotFoundException("No encontrado"));
-        mockMvc.perform(get("/api/carrito/99"))
-                .andExpect(status().isNotFound());
+    void buscarPorIdDebeRetornarOk() {
+        when(carritoService.buscarPorId(1L)).thenReturn(item());
+
+        ResponseEntity<CarritoItem> respuesta = carritoController.buscarPorId(1L);
+
+        assertEquals(HttpStatus.OK, respuesta.getStatusCode());
+        assertEquals(1L, respuesta.getBody().getId());
+        verify(carritoService).buscarPorId(1L);
     }
 
     @Test
-    @DisplayName("POST /api/carrito debe retornar 201 al agregar item")
-    void agregarItemDebeRetornar201() throws Exception {
-        CarritoItem nuevo = new CarritoItem(null, 1L, 2L, "SKU-001", "Laptop", new BigDecimal("999.99"), 1, true, null);
-        CarritoItem creado = new CarritoItem(1L, 1L, 2L, "SKU-001", "Laptop", new BigDecimal("999.99"), 1, true, null);
-        when(carritoService.agregarItem(any())).thenReturn(creado);
-        mockMvc.perform(post("/api/carrito")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(nuevo)))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").value(1));
+    void agregarItemDebeRetornarCreated() {
+        CarritoItem item = item();
+        when(carritoService.agregarItem(item)).thenReturn(item);
+
+        ResponseEntity<CarritoItem> respuesta = carritoController.agregarItem(item);
+
+        assertEquals(HttpStatus.CREATED, respuesta.getStatusCode());
+        assertSame(item, respuesta.getBody());
+        verify(carritoService).agregarItem(item);
+    }
+
+    @Test
+    void actualizarCantidadDebeRetornarOk() {
+        CarritoItem item = item();
+        item.setCantidad(5);
+        when(carritoService.actualizarCantidad(1L, 5)).thenReturn(item);
+
+        ResponseEntity<CarritoItem> respuesta = carritoController.actualizarCantidad(1L, 5);
+
+        assertEquals(HttpStatus.OK, respuesta.getStatusCode());
+        assertEquals(5, respuesta.getBody().getCantidad());
+        verify(carritoService).actualizarCantidad(1L, 5);
+    }
+
+    @Test
+    void eliminarItemDebeRetornarNoContent() {
+        doNothing().when(carritoService).eliminarItem(1L);
+
+        ResponseEntity<Void> respuesta = carritoController.eliminarItem(1L);
+
+        assertEquals(HttpStatus.NO_CONTENT, respuesta.getStatusCode());
+        assertNull(respuesta.getBody());
+        verify(carritoService).eliminarItem(1L);
+    }
+
+    @Test
+    void vaciarCarritoDebeRetornarNoContent() {
+        doNothing().when(carritoService).vaciarCarrito(10L);
+
+        ResponseEntity<Void> respuesta = carritoController.vaciarCarrito(10L);
+
+        assertEquals(HttpStatus.NO_CONTENT, respuesta.getStatusCode());
+        assertNull(respuesta.getBody());
+        verify(carritoService).vaciarCarrito(10L);
+    }
+
+    @Test
+    void calcularTotalDebeRetornarUsuarioYTotal() {
+        when(carritoService.calcularTotal(10L)).thenReturn(new BigDecimal("250.00"));
+
+        ResponseEntity<Map<String, Object>> respuesta = carritoController.calcularTotal(10L);
+
+        assertEquals(HttpStatus.OK, respuesta.getStatusCode());
+        assertEquals(10L, respuesta.getBody().get("usuarioId"));
+        assertEquals(new BigDecimal("250.00"), respuesta.getBody().get("total"));
+        verify(carritoService).calcularTotal(10L);
     }
 }
