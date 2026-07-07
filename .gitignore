@@ -36,3 +36,4 @@ target/
 # Backups temporales
 *.bak
 *.bak.*
+bin/
