@@ -103,8 +103,11 @@ services:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql_catalogo:3306/catalog_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
       SPRING_DATASOURCE_USERNAME: desarrollador
       SPRING_DATASOURCE_PASSWORD: password_seguro_123
-      EUREKA_CLIENT_ENABLED: "false"
+      EUREKA_CLIENT_ENABLED: "true"
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka:8761/eureka/
     depends_on:
+      ms_eureka:
+        condition: service_started
       mysql_catalogo:
         condition: service_healthy
     networks:
@@ -124,8 +127,11 @@ services:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql_inventario:3306/inventory_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
       SPRING_DATASOURCE_USERNAME: desarrollador
       SPRING_DATASOURCE_PASSWORD: password_seguro_123
-      EUREKA_CLIENT_ENABLED: "false"
+      EUREKA_CLIENT_ENABLED: "true"
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka:8761/eureka/
     depends_on:
+      ms_eureka:
+        condition: service_started
       mysql_inventario:
         condition: service_healthy
     networks:
@@ -146,8 +152,11 @@ services:
       SPRING_DATASOURCE_USERNAME: desarrollador
       SPRING_DATASOURCE_PASSWORD: password_seguro_123
       CATALOG_SERVICE_URL: http://api_catalogo:8083
-      EUREKA_CLIENT_ENABLED: "false"
+      EUREKA_CLIENT_ENABLED: "true"
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka:8761/eureka/
     depends_on:
+      ms_eureka:
+        condition: service_started
       mysql_carrito:
         condition: service_healthy
       api_catalogo:
@@ -171,8 +180,11 @@ services:
       SPRING_DATASOURCE_PASSWORD: password_seguro_123
       INVENTORY_SERVICE_URL: http://api_inventario:8084
       SPRING_CLOUD_OPENFEIGN_OKHTTP_ENABLED: "true"
-      EUREKA_CLIENT_ENABLED: "false"
+      EUREKA_CLIENT_ENABLED: "true"
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka:8761/eureka/
     depends_on:
+      ms_eureka:
+        condition: service_started
       mysql_ordenes:
         condition: service_healthy
       api_inventario:
@@ -194,8 +206,11 @@ services:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql_pagos:3306/payment_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
       SPRING_DATASOURCE_USERNAME: desarrollador
       SPRING_DATASOURCE_PASSWORD: password_seguro_123
-      EUREKA_CLIENT_ENABLED: "false"
+      EUREKA_CLIENT_ENABLED: "true"
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka:8761/eureka/
     depends_on:
+      ms_eureka:
+        condition: service_started
       mysql_pagos:
         condition: service_healthy
     networks:
@@ -411,6 +426,21 @@ services:
       - ecommerce-net
 
 
+  ms_eureka:
+    image: maven:3.9-eclipse-temurin-21
+    container_name: ms_eureka
+    working_dir: /app
+    volumes:
+      - ./ms-eureka:/app
+      - maven_repo:/root/.m2
+    command: mvn spring-boot:run
+    ports:
+      - "8761:8761"
+    networks:
+      ecommerce-net:
+        aliases:
+          - eureka
+
   api_gateway:
     image: maven:3.9-eclipse-temurin-21
     container_name: api_gateway
@@ -421,7 +451,12 @@ services:
     command: mvn spring-boot:run
     ports:
       - "8080:8080"
+    environment:
+      EUREKA_CLIENT_ENABLED: "true"
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka:8761/eureka/
     depends_on:
+      ms_eureka:
+        condition: service_started
       api_catalogo:
         condition: service_started
       api_inventario:
