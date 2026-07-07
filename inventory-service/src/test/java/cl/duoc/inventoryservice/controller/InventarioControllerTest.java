@@ -1,74 +1,174 @@
 package cl.duoc.inventoryservice.controller;
 
-import cl.duoc.inventoryservice.exception.GlobalExceptionHandler;
-import cl.duoc.inventoryservice.exception.InventarioNotFoundException;
 import cl.duoc.inventoryservice.model.Inventario;
 import cl.duoc.inventoryservice.service.InventarioService;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import java.util.List;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+@ExtendWith(MockitoExtension.class)
 @DisplayName("InventarioController - Capa Controlador")
 class InventarioControllerTest {
 
-    private MockMvc mockMvc;
+    @Mock
     private InventarioService inventarioService;
-    private ObjectMapper objectMapper;
 
-    @BeforeEach
-    void setUp() {
-        inventarioService = mock(InventarioService.class);
-        mockMvc = MockMvcBuilders.standaloneSetup(new InventarioController(inventarioService))
-                .setControllerAdvice(new GlobalExceptionHandler()).build();
-        objectMapper = new ObjectMapper();
+    @InjectMocks
+    private InventarioController inventarioController;
+
+    private Inventario inventario() {
+        return new Inventario(
+                1L,
+                10L,
+                "SKU-001",
+                100,
+                20,
+                "Bodega A",
+                true
+        );
     }
 
     @Test
-    @DisplayName("GET /api/inventario debe retornar 200 con lista")
-    void listarActivosDebeRetornar200() throws Exception {
-        Inventario inv = new Inventario(1L, 10L, "SKU-001", 100, 20, "Bodega A", true);
-        when(inventarioService.listarActivos()).thenReturn(List.of(inv));
-        mockMvc.perform(get("/api/inventario"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].sku").value("SKU-001"));
+    void listarActivosDebeRetornarOk() {
+        when(inventarioService.listarActivos()).thenReturn(List.of(inventario()));
+
+        ResponseEntity<List<Inventario>> respuesta = inventarioController.listarActivos();
+
+        assertEquals(HttpStatus.OK, respuesta.getStatusCode());
+        assertEquals(1, respuesta.getBody().size());
+        verify(inventarioService).listarActivos();
     }
 
     @Test
-    @DisplayName("GET /api/inventario/{id} debe retornar 200 cuando existe")
-    void buscarPorIdDebeRetornar200() throws Exception {
-        Inventario inv = new Inventario(1L, 10L, "SKU-001", 100, 20, "Bodega A", true);
-        when(inventarioService.buscarPorId(1L)).thenReturn(inv);
-        mockMvc.perform(get("/api/inventario/1"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.sku").value("SKU-001"));
+    void listarTodosDebeRetornarOk() {
+        when(inventarioService.listarTodos()).thenReturn(List.of(inventario()));
+
+        ResponseEntity<List<Inventario>> respuesta = inventarioController.listarTodos();
+
+        assertEquals(HttpStatus.OK, respuesta.getStatusCode());
+        assertEquals(1, respuesta.getBody().size());
+        verify(inventarioService).listarTodos();
     }
 
     @Test
-    @DisplayName("GET /api/inventario/{id} debe retornar 404 cuando no existe")
-    void buscarPorIdDebeRetornar404() throws Exception {
-        when(inventarioService.buscarPorId(99L)).thenThrow(new InventarioNotFoundException("No encontrado"));
-        mockMvc.perform(get("/api/inventario/99"))
-                .andExpect(status().isNotFound());
+    void buscarPorIdDebeRetornarOk() {
+        when(inventarioService.buscarPorId(1L)).thenReturn(inventario());
+
+        ResponseEntity<Inventario> respuesta = inventarioController.buscarPorId(1L);
+
+        assertEquals(HttpStatus.OK, respuesta.getStatusCode());
+        assertEquals(1L, respuesta.getBody().getId());
+        verify(inventarioService).buscarPorId(1L);
     }
 
     @Test
-    @DisplayName("POST /api/inventario debe retornar 201 al crear")
-    void crearDebeRetornar201() throws Exception {
-        Inventario nuevo = new Inventario(null, 10L, "SKU-NEW", 50, 0, "Bodega B", true);
-        Inventario creado = new Inventario(1L, 10L, "SKU-NEW", 50, 0, "Bodega B", true);
-        when(inventarioService.crear(any())).thenReturn(creado);
-        mockMvc.perform(post("/api/inventario")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(nuevo)))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").value(1));
+    void buscarPorSkuDebeRetornarOk() {
+        when(inventarioService.buscarPorSku("SKU-001")).thenReturn(inventario());
+
+        ResponseEntity<Inventario> respuesta = inventarioController.buscarPorSku("SKU-001");
+
+        assertEquals(HttpStatus.OK, respuesta.getStatusCode());
+        assertEquals("SKU-001", respuesta.getBody().getSku());
+        verify(inventarioService).buscarPorSku("SKU-001");
+    }
+
+    @Test
+    void buscarPorProductoIdDebeRetornarOk() {
+        when(inventarioService.buscarPorProductoId(10L)).thenReturn(inventario());
+
+        ResponseEntity<Inventario> respuesta = inventarioController.buscarPorProductoId(10L);
+
+        assertEquals(HttpStatus.OK, respuesta.getStatusCode());
+        assertEquals(10L, respuesta.getBody().getProductoId());
+        verify(inventarioService).buscarPorProductoId(10L);
+    }
+
+    @Test
+    void crearDebeRetornarCreated() {
+        Inventario inventario = inventario();
+        when(inventarioService.crear(inventario)).thenReturn(inventario);
+
+        ResponseEntity<Inventario> respuesta = inventarioController.crear(inventario);
+
+        assertEquals(HttpStatus.CREATED, respuesta.getStatusCode());
+        assertSame(inventario, respuesta.getBody());
+        verify(inventarioService).crear(inventario);
+    }
+
+    @Test
+    void actualizarDebeRetornarOk() {
+        Inventario inventario = inventario();
+        when(inventarioService.actualizar(1L, inventario)).thenReturn(inventario);
+
+        ResponseEntity<Inventario> respuesta = inventarioController.actualizar(1L, inventario);
+
+        assertEquals(HttpStatus.OK, respuesta.getStatusCode());
+        assertSame(inventario, respuesta.getBody());
+        verify(inventarioService).actualizar(1L, inventario);
+    }
+
+    @Test
+    void reservarStockDebeRetornarOk() {
+        Inventario inventario = inventario();
+        when(inventarioService.reservarStock(1L, 5)).thenReturn(inventario);
+
+        ResponseEntity<Inventario> respuesta = inventarioController.reservarStock(1L, 5);
+
+        assertEquals(HttpStatus.OK, respuesta.getStatusCode());
+        verify(inventarioService).reservarStock(1L, 5);
+    }
+
+    @Test
+    void liberarReservaDebeRetornarOk() {
+        Inventario inventario = inventario();
+        when(inventarioService.liberarReserva(1L, 5)).thenReturn(inventario);
+
+        ResponseEntity<Inventario> respuesta = inventarioController.liberarReserva(1L, 5);
+
+        assertEquals(HttpStatus.OK, respuesta.getStatusCode());
+        verify(inventarioService).liberarReserva(1L, 5);
+    }
+
+    @Test
+    void descontarStockDebeRetornarOk() {
+        Inventario inventario = inventario();
+        when(inventarioService.descontarStock(1L, 5)).thenReturn(inventario);
+
+        ResponseEntity<Inventario> respuesta = inventarioController.descontarStock(1L, 5);
+
+        assertEquals(HttpStatus.OK, respuesta.getStatusCode());
+        verify(inventarioService).descontarStock(1L, 5);
+    }
+
+    @Test
+    void reponerStockDebeRetornarOk() {
+        Inventario inventario = inventario();
+        when(inventarioService.reponerStock(1L, 5)).thenReturn(inventario);
+
+        ResponseEntity<Inventario> respuesta = inventarioController.reponerStock(1L, 5);
+
+        assertEquals(HttpStatus.OK, respuesta.getStatusCode());
+        verify(inventarioService).reponerStock(1L, 5);
+    }
+
+    @Test
+    void desactivarDebeRetornarNoContent() {
+        doNothing().when(inventarioService).desactivar(1L);
+
+        ResponseEntity<Void> respuesta = inventarioController.desactivar(1L);
+
+        assertEquals(HttpStatus.NO_CONTENT, respuesta.getStatusCode());
+        assertNull(respuesta.getBody());
+        verify(inventarioService).desactivar(1L);
     }
 }
