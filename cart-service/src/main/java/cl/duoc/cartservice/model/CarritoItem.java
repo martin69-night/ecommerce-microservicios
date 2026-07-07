@@ -1,6 +1,10 @@
 package cl.duoc.cartservice.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -13,21 +17,28 @@ public class CarritoItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull(message = "El usuarioId es obligatorio")
+    @Positive(message = "El usuarioId debe ser mayor a cero")
     @Column(nullable = false)
     private Long usuarioId;
 
     @Column(nullable = false)
     private Long productoId;
 
+    @NotBlank(message = "El SKU es obligatorio")
+    @Size(max = 50, message = "El SKU no puede superar 50 caracteres")
     @Column(nullable = false, length = 50)
     private String sku;
 
+    @Size(max = 120, message = "El nombre del producto no puede superar 120 caracteres")
     @Column(nullable = false, length = 120)
     private String nombreProducto;
 
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal precioUnitario;
 
+    @NotNull(message = "La cantidad es obligatoria")
+    @Positive(message = "La cantidad debe ser mayor a cero")
     @Column(nullable = false)
     private Integer cantidad;
 
@@ -38,7 +49,9 @@ public class CarritoItem {
     public CarritoItem() {
     }
 
-    public CarritoItem(Long id, Long usuarioId, Long productoId, String sku, String nombreProducto, BigDecimal precioUnitario, Integer cantidad, Boolean activo, LocalDateTime fechaCreacion) {
+    public CarritoItem(Long id, Long usuarioId, Long productoId, String sku,
+                       String nombreProducto, BigDecimal precioUnitario,
+                       Integer cantidad, Boolean activo, LocalDateTime fechaCreacion) {
         this.id = id;
         this.usuarioId = usuarioId;
         this.productoId = productoId;
