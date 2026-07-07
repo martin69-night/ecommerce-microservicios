@@ -1,11 +1,15 @@
 package cl.duoc.catalogservice.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Column;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 import java.math.BigDecimal;
 
@@ -17,20 +21,34 @@ public class Producto {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "El SKU es obligatorio")
+    @Size(max = 50, message = "El SKU no puede superar 50 caracteres")
     @Column(nullable = false, unique = true, length = 50)
     private String sku;
+
+    @NotBlank(message = "El nombre es obligatorio")
+    @Size(max = 120, message = "El nombre no puede superar 120 caracteres")
     @Column(nullable = false, length = 120)
     private String nombre;
+
+    @Size(max = 500, message = "La descripcion no puede superar 500 caracteres")
     private String descripcion;
+
+    @NotNull(message = "El precio es obligatorio")
+    @DecimalMin(value = "0.01", message = "El precio debe ser mayor a cero")
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal precio;
+
+    @Size(max = 80, message = "La categoria no puede superar 80 caracteres")
     private String categoria;
+
     private Boolean activo = true;
 
     public Producto() {
     }
 
-    public Producto(Long id, String sku, String nombre, String descripcion, BigDecimal precio, String categoria, Boolean activo) {
+    public Producto(Long id, String sku, String nombre, String descripcion,
+                    BigDecimal precio, String categoria, Boolean activo) {
         this.id = id;
         this.sku = sku;
         this.nombre = nombre;
