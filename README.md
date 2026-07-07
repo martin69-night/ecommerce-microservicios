@@ -166,3 +166,7 @@ Ver detalle en [TESTING_PLAN.md](./TESTING_PLAN.md)
 - Springdoc OpenAPI 3.0.3 (Swagger UI)
 - Docker + Docker Compose
 - AWS EC2 (Ubuntu)
+
+## Tablero Trello
+
+[Ver tablero de gestión del proyecto](PEGA_TU_LINK_AQUÍ)
