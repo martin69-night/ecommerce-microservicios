@@ -1,0 +1,446 @@
+{
+  "info": {
+    "name": "DSY1103 E-Commerce — Comunicación vía API Gateway",
+    "description": "Colección que demuestra la comunicación entre microservicios a través del API Gateway (puerto 8080) con Eureka Service Discovery.\n\nTodas las peticiones pasan por http://{{gateway_url}}/api/* y son enrutadas dinámicamente por Spring Cloud Gateway usando lb:// hacia los microservicios registrados en Eureka.\n\nFlujo de comunicación inter-servicio demostrado:\n- order-service consulta stock a inventory-service vía Feign\n- cart-service consulta productos a catalog-service vía Feign\n- API Gateway resuelve rutas con Eureka (lb://catalog-service, lb://order-service, etc.)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "gateway_url",
+      "value": "localhost:8080",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "01 — Catalog Service (vía Gateway)",
+      "description": "Peticiones al catálogo de productos enrutadas por el Gateway hacia catalog-service (lb://catalog-service)",
+      "item": [
+        {
+          "name": "GET Listar productos activos",
+          "request": {
+            "method": "GET",
+            "url": "http://{{gateway_url}}/api/productos",
+            "description": "Lista todos los productos activos del catálogo. Gateway enruta Path=/api/productos/** → lb://catalog-service"
+          }
+        },
+        {
+          "name": "GET Listar todos los productos",
+          "request": {
+            "method": "GET",
+            "url": "http://{{gateway_url}}/api/productos/todos",
+            "description": "Lista todos los productos incluyendo desactivados"
+          }
+        },
+        {
+          "name": "GET Buscar producto por ID",
+          "request": {
+            "method": "GET",
+            "url": "http://{{gateway_url}}/api/productos/1",
+            "description": "Busca un producto específico por su ID"
+          }
+        },
+        {
+          "name": "GET Buscar producto por SKU",
+          "request": {
+            "method": "GET",
+            "url": "http://{{gateway_url}}/api/productos/sku/PROD-001",
+            "description": "Busca un producto por su código SKU"
+          }
+        },
+        {
+          "name": "GET Buscar por categoría",
+          "request": {
+            "method": "GET",
+            "url": "http://{{gateway_url}}/api/productos/categoria/Electrónica",
+            "description": "Lista productos activos filtrados por categoría"
+          }
+        },
+        {
+          "name": "GET Buscar por nombre",
+          "request": {
+            "method": "GET",
+            "url": "http://{{gateway_url}}/api/productos/buscar?nombre=laptop",
+            "description": "Busca productos activos cuyo nombre contenga el texto indicado"
+          }
+        },
+        {
+          "name": "POST Crear producto",
+          "request": {
+            "method": "POST",
+            "url": "http://{{gateway_url}}/api/productos",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"sku\": \"PROD-TEST-001\",\n  \"nombre\": \"Laptop Gaming Pro\",\n  \"descripcion\": \"Laptop para gaming de alta gama con RTX 4090\",\n  \"precio\": 1599990.00,\n  \"categoria\": \"Electrónica\"\n}"
+            },
+            "description": "Crea un nuevo producto. Valida SKU único y campos obligatorios con Bean Validation"
+          }
+        },
+        {
+          "name": "PUT Actualizar producto",
+          "request": {
+            "method": "PUT",
+            "url": "http://{{gateway_url}}/api/productos/1",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"sku\": \"PROD-001\",\n  \"nombre\": \"Laptop Gaming Pro (Actualizada)\",\n  \"descripcion\": \"Laptop para gaming de alta gama - edición 2026\",\n  \"precio\": 1799990.00,\n  \"categoria\": \"Electrónica\"\n}"
+            },
+            "description": "Actualiza un producto existente. Valida que el nuevo SKU no esté duplicado"
+          }
+        },
+        {
+          "name": "PATCH Desactivar producto",
+          "request": {
+            "method": "PATCH",
+            "url": "http://{{gateway_url}}/api/productos/1/desactivar",
+            "description": "Desactiva un producto (soft delete)"
+          }
+        },
+        {
+          "name": "PATCH Reactivar producto",
+          "request": {
+            "method": "PATCH",
+            "url": "http://{{gateway_url}}/api/productos/1/reactivar",
+            "description": "Reactiva un producto previamente desactivado"
+          }
+        },
+        {
+          "name": "DELETE Eliminar producto",
+          "request": {
+            "method": "DELETE",
+            "url": "http://{{gateway_url}}/api/productos/99",
+            "description": "Elimina físicamente un producto de la base de datos"
+          }
+        }
+      ]
+    },
+    {
+      "name": "02 — Inventory Service (vía Gateway)",
+      "description": "Peticiones de inventario enrutadas por el Gateway hacia inventory-service (lb://inventory-service)",
+      "item": [
+        {
+          "name": "GET Listar inventario activo",
+          "request": {
+            "method": "GET",
+            "url": "http://{{gateway_url}}/api/inventario",
+            "description": "Lista todos los registros de inventario activos. Gateway enruta Path=/api/inventario/** → lb://inventory-service"
+          }
+        },
+        {
+          "name": "GET Listar todo el inventario",
+          "request": {
+            "method": "GET",
+            "url": "http://{{gateway_url}}/api/inventario/todos",
+            "description": "Lista todo el inventario incluyendo inactivos"
+          }
+        },
+        {
+          "name": "GET Inventario por ID",
+          "request": {
+            "method": "GET",
+            "url": "http://{{gateway_url}}/api/inventario/1",
+            "description": "Busca un registro de inventario por ID"
+          }
+        },
+        {
+          "name": "GET Inventario por SKU",
+          "request": {
+            "method": "GET",
+            "url": "http://{{gateway_url}}/api/inventario/sku/PROD-001",
+            "description": "Busca inventario por código SKU"
+          }
+        },
+        {
+          "name": "POST Crear inventario",
+          "request": {
+            "method": "POST",
+            "url": "http://{{gateway_url}}/api/inventario",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"productoId\": 1,\n  \"sku\": \"PROD-TEST-001\",\n  \"cantidadDisponible\": 100,\n  \"cantidadReservada\": 0,\n  \"ubicacion\": \"Bodega A - Estante 3\"\n}"
+            },
+            "description": "Crea un registro de inventario para un producto"
+          }
+        },
+        {
+          "name": "PATCH Reservar stock",
+          "request": {
+            "method": "PATCH",
+            "url": "http://{{gateway_url}}/api/inventario/1/reservar?cantidad=5",
+            "description": "Reserva unidades del stock disponible. Valida stock suficiente (regla de negocio)"
+          }
+        },
+        {
+          "name": "PATCH Liberar reserva",
+          "request": {
+            "method": "PATCH",
+            "url": "http://{{gateway_url}}/api/inventario/1/liberar?cantidad=3",
+            "description": "Libera unidades previamente reservadas"
+          }
+        },
+        {
+          "name": "PATCH Descontar stock",
+          "request": {
+            "method": "PATCH",
+            "url": "http://{{gateway_url}}/api/inventario/1/descontar?cantidad=2",
+            "description": "Descuenta unidades de las reservadas (confirma venta)"
+          }
+        },
+        {
+          "name": "PATCH Reponer stock",
+          "request": {
+            "method": "PATCH",
+            "url": "http://{{gateway_url}}/api/inventario/1/reponer?cantidad=50",
+            "description": "Repone stock disponible al inventario"
+          }
+        }
+      ]
+    },
+    {
+      "name": "03 — Order Service (vía Gateway) ★ Comunicación inter-servicio",
+      "description": "Peticiones de pedidos enrutadas por el Gateway. ★ IMPORTANTE: order-service se comunica internamente con inventory-service vía Feign Client para verificar stock al crear un pedido.",
+      "item": [
+        {
+          "name": "GET Listar pedidos",
+          "request": {
+            "method": "GET",
+            "url": "http://{{gateway_url}}/api/pedidos",
+            "description": "Lista todos los pedidos. Gateway enruta Path=/api/pedidos/** → lb://order-service"
+          }
+        },
+        {
+          "name": "GET Pedido por ID",
+          "request": {
+            "method": "GET",
+            "url": "http://{{gateway_url}}/api/pedidos/1",
+            "description": "Busca un pedido específico por ID"
+          }
+        },
+        {
+          "name": "GET Pedidos por usuario",
+          "request": {
+            "method": "GET",
+            "url": "http://{{gateway_url}}/api/pedidos/usuario/1",
+            "description": "Lista todos los pedidos de un usuario específico"
+          }
+        },
+        {
+          "name": "GET Pedidos por estado",
+          "request": {
+            "method": "GET",
+            "url": "http://{{gateway_url}}/api/pedidos/estado/CREADO",
+            "description": "Filtra pedidos por estado (CREADO, CONFIRMADO, ENVIADO, ENTREGADO, CANCELADO)"
+          }
+        },
+        {
+          "name": "★ POST Crear pedido (comunica con inventory-service)",
+          "request": {
+            "method": "POST",
+            "url": "http://{{gateway_url}}/api/pedidos",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"usuarioId\": 1,\n  \"productoId\": 1,\n  \"sku\": \"PROD-001\",\n  \"nombreProducto\": \"Laptop Gaming Pro\",\n  \"precioUnitario\": 1599990.00,\n  \"cantidad\": 2\n}"
+            },
+            "description": "★ COMUNICACIÓN INTER-SERVICIO: Al crear un pedido, order-service consulta inventory-service vía Feign Client para verificar disponibilidad de stock antes de confirmar. Esta petición demuestra la comunicación entre microservicios a través del Gateway + Eureka."
+          }
+        },
+        {
+          "name": "PATCH Cambiar estado del pedido",
+          "request": {
+            "method": "PATCH",
+            "url": "http://{{gateway_url}}/api/pedidos/1/estado?estado=CONFIRMADO",
+            "description": "Cambia el estado de un pedido (CREADO → CONFIRMADO → ENVIADO → ENTREGADO)"
+          }
+        },
+        {
+          "name": "PATCH Cancelar pedido",
+          "request": {
+            "method": "PATCH",
+            "url": "http://{{gateway_url}}/api/pedidos/1/cancelar",
+            "description": "Cancela un pedido activo"
+          }
+        }
+      ]
+    },
+    {
+      "name": "04 — Payment Service (vía Gateway)",
+      "description": "Peticiones de pagos enrutadas por el Gateway hacia payment-service (lb://payment-service)",
+      "item": [
+        {
+          "name": "GET Listar pagos",
+          "request": {
+            "method": "GET",
+            "url": "http://{{gateway_url}}/api/pagos",
+            "description": "Lista todos los pagos registrados. Gateway enruta Path=/api/pagos/** → lb://payment-service"
+          }
+        },
+        {
+          "name": "GET Pago por ID",
+          "request": {
+            "method": "GET",
+            "url": "http://{{gateway_url}}/api/pagos/1",
+            "description": "Busca un pago específico por ID"
+          }
+        },
+        {
+          "name": "GET Pagos por pedido",
+          "request": {
+            "method": "GET",
+            "url": "http://{{gateway_url}}/api/pagos/pedido/1",
+            "description": "Lista todos los pagos asociados a un pedido"
+          }
+        },
+        {
+          "name": "POST Registrar pago",
+          "request": {
+            "method": "POST",
+            "url": "http://{{gateway_url}}/api/pagos",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"pedidoId\": 1,\n  \"usuarioId\": 1,\n  \"monto\": 3199980.00,\n  \"metodo\": \"TARJETA_CREDITO\"\n}"
+            },
+            "description": "Registra un nuevo pago para un pedido"
+          }
+        },
+        {
+          "name": "PATCH Aprobar pago",
+          "request": {
+            "method": "PATCH",
+            "url": "http://{{gateway_url}}/api/pagos/1/aprobar",
+            "description": "Aprueba un pago pendiente"
+          }
+        },
+        {
+          "name": "PATCH Rechazar pago",
+          "request": {
+            "method": "PATCH",
+            "url": "http://{{gateway_url}}/api/pagos/1/rechazar",
+            "description": "Rechaza un pago pendiente"
+          }
+        }
+      ]
+    },
+    {
+      "name": "05 — Cart Service (vía Gateway) ★ Comunicación inter-servicio",
+      "description": "Peticiones del carrito enrutadas por el Gateway. ★ IMPORTANTE: cart-service se comunica internamente con catalog-service vía Feign Client para obtener información del producto al agregar items.",
+      "item": [
+        {
+          "name": "GET Listar items del carrito",
+          "request": {
+            "method": "GET",
+            "url": "http://{{gateway_url}}/api/carrito",
+            "description": "Lista todos los items de carrito. Gateway enruta Path=/api/carrito/** → lb://cart-service"
+          }
+        },
+        {
+          "name": "GET Carrito de un usuario",
+          "request": {
+            "method": "GET",
+            "url": "http://{{gateway_url}}/api/carrito/usuario/1",
+            "description": "Lista todos los items del carrito de un usuario específico"
+          }
+        },
+        {
+          "name": "GET Total del carrito",
+          "request": {
+            "method": "GET",
+            "url": "http://{{gateway_url}}/api/carrito/usuario/1/total",
+            "description": "Calcula el total del carrito de un usuario"
+          }
+        },
+        {
+          "name": "★ POST Agregar item al carrito (comunica con catalog-service)",
+          "request": {
+            "method": "POST",
+            "url": "http://{{gateway_url}}/api/carrito",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"usuarioId\": 1,\n  \"productoId\": 1,\n  \"sku\": \"PROD-001\",\n  \"nombreProducto\": \"Laptop Gaming Pro\",\n  \"precioUnitario\": 1599990.00,\n  \"cantidad\": 1\n}"
+            },
+            "description": "★ COMUNICACIÓN INTER-SERVICIO: Al agregar un item, cart-service consulta catalog-service vía Feign Client para validar que el producto existe y obtener información actualizada. Esta petición demuestra la comunicación entre microservicios a través del Gateway + Eureka."
+          }
+        },
+        {
+          "name": "PATCH Actualizar cantidad",
+          "request": {
+            "method": "PATCH",
+            "url": "http://{{gateway_url}}/api/carrito/1/cantidad?cantidad=3",
+            "description": "Actualiza la cantidad de un item en el carrito"
+          }
+        },
+        {
+          "name": "DELETE Eliminar item",
+          "request": {
+            "method": "DELETE",
+            "url": "http://{{gateway_url}}/api/carrito/1",
+            "description": "Elimina un item específico del carrito"
+          }
+        },
+        {
+          "name": "DELETE Vaciar carrito de usuario",
+          "request": {
+            "method": "DELETE",
+            "url": "http://{{gateway_url}}/api/carrito/usuario/1",
+            "description": "Elimina todos los items del carrito de un usuario"
+          }
+        }
+      ]
+    },
+    {
+      "name": "06 — Eureka Service Discovery",
+      "description": "Verificación del registro de servicios en Eureka",
+      "item": [
+        {
+          "name": "GET Servicios registrados en Eureka",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:8761/eureka/apps",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "description": "Consulta todos los microservicios registrados en Eureka. Debe mostrar al menos: CATALOG-SERVICE, INVENTORY-SERVICE, CART-SERVICE registrados con estado UP."
+          }
+        }
+      ]
+    }
+  ]
+}
