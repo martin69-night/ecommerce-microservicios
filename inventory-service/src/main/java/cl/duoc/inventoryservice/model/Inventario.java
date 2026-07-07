@@ -1,6 +1,17 @@
 package cl.duoc.inventoryservice.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.persistence.PrePersist;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "inventarios")
@@ -10,17 +21,24 @@ public class Inventario {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull(message = "El productoId es obligatorio")
+    @Positive(message = "El productoId debe ser mayor a cero")
     private Long productoId;
 
+    @NotBlank(message = "El SKU es obligatorio")
+    @Size(max = 50, message = "El SKU no puede superar 50 caracteres")
     @Column(nullable = false, unique = true, length = 50)
     private String sku;
 
+    @PositiveOrZero(message = "La cantidad disponible no puede ser negativa")
     @Column(nullable = false)
     private Integer cantidadDisponible;
 
+    @PositiveOrZero(message = "La cantidad reservada no puede ser negativa")
     @Column(nullable = false)
     private Integer cantidadReservada;
 
+    @Size(max = 120, message = "La ubicacion no puede superar 120 caracteres")
     private String ubicacion;
 
     private Boolean activo = true;
@@ -28,7 +46,15 @@ public class Inventario {
     public Inventario() {
     }
 
-    public Inventario(Long id, Long productoId, String sku, Integer cantidadDisponible, Integer cantidadReservada, String ubicacion, Boolean activo) {
+    public Inventario(
+            Long id,
+            Long productoId,
+            String sku,
+            Integer cantidadDisponible,
+            Integer cantidadReservada,
+            String ubicacion,
+            Boolean activo
+    ) {
         this.id = id;
         this.productoId = productoId;
         this.sku = sku;
