@@ -169,4 +169,4 @@ Ver detalle en [TESTING_PLAN.md](./TESTING_PLAN.md)
 
 ## Tablero Trello
 
-[Ver tablero de gestión del proyecto](PEGA_TU_LINK_AQUÍ)
+[Ver tablero de gestión del proyecto](./KANBAN.md)
